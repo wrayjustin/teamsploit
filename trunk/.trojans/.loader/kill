@@ -1,0 +1,19 @@
+# kill - process kill
+
+if [ $# == 0 ]; then
+        echo "kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]"
+        exit
+else
+        for i in $( seq $# )
+        do
+                PUSER=`ps aux | grep " $1 " | grep -v "grep  $1" | awk {' print $1 '}`
+                PNAME=`ps aux | grep " $1 " | grep -v "grep  $1" | awk {' print $11 '}`
+                CUSER=`whoami`
+                CSHELL=`echo $SHELL | sed -e 's/^.*\///g'`
+                if [ -z $PNAME ]; then
+                        echo "$CSHELL: kill: ($1) - No such process"
+                        exit
+                fi
+                shift
+        done
+fi

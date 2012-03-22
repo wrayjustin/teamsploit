@@ -1,0 +1,5 @@
+			#!TS_AUTOPOST_AUTOTARGET!#
+			session.run_cmd('sysinfo')
+			session.run_cmd('ipconfig')
+			session.run_cmd('route')
+			session.run_cmd('ps')
