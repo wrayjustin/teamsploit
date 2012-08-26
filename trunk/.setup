@@ -36,6 +36,8 @@ echo "exploit -z -j" >> .teamsploit.rc.listener
 echo "set ExitOnSession false" >> .teamsploit.rc.listener
 echo "set LPORT $TS_TEAM_PORT_HTTPS" >> .teamsploit.rc.listener
 echo "exploit -z -j" >> .teamsploit.rc.listener
+echo "clear" >> .teamsploit.rc.listener
+echo "jobs -v" >> .teamsploit.rc.listener
 
 echo "set Prompt teamsploit" > .teamsploit.rc.primary
 echo "load autopost" >> .teamsploit.rc.primary
@@ -49,6 +51,15 @@ echo "set AutoLoadStdapi false" >> .teamsploit.rc.primary
 if [ $TS_LOCAL == 0 ]; then
 	echo "db_connect $TS_DB_USER:$TS_DB_PASS@$TS_DB_HOST:$TS_DB_PORT/$TS_DB_NAME" >> .teamsploit.rc.primary
 fi
+
+#  Are we running a MSFD/MSFRPCD Service?
+if [ $TS_SERVER == 1 ]; then
+	echo "load msfd ServerHost=$TS_MY_IP ServerPort=$TS_SERVER_MSFD_PORT" >> .teamsploit.rc.primary
+	echo "load msgrpc Host=$TS_MY_IP Port=$TS_SERVER_MSFRPCD_PORT User=$TS_SERVER_MSFRPCD_USER Pass=$TS_SERVER_MSFRPCD_PASS" >> .teamsploit.rc.primary
+fi
+
+echo "clear" >> .teamsploit.rc.primary
+echo "show plugins" >> .teamsploit.rc.primary
 
 rm /tmp/autopost.rb.* 2> /dev/null
 

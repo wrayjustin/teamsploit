@@ -79,11 +79,11 @@ class Plugin::AutoPostExploit < Msf::Plugin
 	end
 
 	def name
-		"Auto Post Exploitation"
+		"autopost"
 	end
 
 	def desc
-		"Automated Post Exploitation"
+		"Automated Post Exploitation (TeamSploit)"
 	end
 
 end
