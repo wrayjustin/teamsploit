@@ -24,9 +24,13 @@ echo '  |    |\  ___/ / __ \|  Y Y  \/        \  |_> >  |_(  <_> )  ||  |  '
 echo '  |____| \___  >____  /__|_|  /_______  /   __/|____/\____/|__||__|  '
 echo '             \/     \/      \/        \/|__|  By:  Justin M. Wray    '
 echo
+echo '====================================================================='
 
 #  Config...because we can
 source teamsploit.conf
+
+#  Notice
+echo "You may need to authenticate, as MSF typical requires administrative rights"
 
 #  Did you config it yet?
 if [ $TS_CONFIG != 1 ]; then
@@ -42,9 +46,11 @@ echo "TeamSploit - Pen Testing With Friends"
 
 echo -n "Loading Enviroment..."
 for i in $(seq 1 $TS_WINDOWS); do
-	gnome-terminal -e 'sudo msfconsole -m .msf -r .teamsploit.rc.primary' -t "Metasploit: Primary $i"
+	gnome-terminal -e 'sudo msfconsole -m .msf -r .teamsploit.rc.primary' -t "TeamSploit: Primary $i"
 done
-gnome-terminal -e 'sudo msfconsole -m .msf -r .teamsploit.rc.listener' -t 'Metasploit: Listener'
-echo "Done"
+gnome-terminal -e 'sudo msfconsole -m .msf -r .teamsploit.rc.listener' -t 'TeamSploit: Listener'
+if [ $TS_MSFD_CONNECT == 1 ]; then
+	gnome-terminal -e "nc $TS_MSFD_HOST $TS_MSFD_PORT" -t 'TeamSploit: MSFD Client'
+fi
 
-echo "You may need to authenticate, as MSF typical requires administrative rights"
+echo "Done"
