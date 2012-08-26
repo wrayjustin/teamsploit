@@ -45,6 +45,7 @@ echo "load openvas" >> .teamsploit.rc.primary
 echo "load nexpose" >> .teamsploit.rc.primary
 echo "load nessus" >> .teamsploit.rc.primary
 echo "load auto_exploit" >> .teamsploit.rc.primary
+echo "load pass_the_hash" >> .teamsploit.rc.primary
 echo "set AutoLoadStdapi false" >> .teamsploit.rc.primary
 
 #  We can haz shared DB?  Soon...
