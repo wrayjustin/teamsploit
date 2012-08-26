@@ -17,4 +17,4 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-ls -lah `whereis msfconsole | awk {' print $2 '}` | awk {' print $10 '} | sed -e 's/\/app\/msfconsole//'
+readlink `whereis msfconsole | awk {' print $2 '}` |  sed -e 's/\/app\/msfconsole//'
