@@ -60,7 +60,7 @@ if [ $TS_NESSUS_CONNECT == 1 ]; then
 fi
 
 #  Run Scans?
-SCAN_RANGE=`echo $TS_TARGET_RANGES | sed -e 's/;/\n/g' | sed -e 's/$/.'0\/24'/g'` | tr '\n' ','
+SCAN_RANGE=`echo $TS_TARGET_RANGES | sed -e 's/;/\n/g' | sed -e 's/$/.0\/24/g' | tr '\n' ',' | sed -e 's/\,$//g'`
 if [ $TS_NESSUS_AUTOSCAN == 1 ]; then
 	echo "nessus_scan_new $TS_NESSUS_POLICY \"teamsploit - `date +%D-%T`\" $SCAN_RANGE" >> .teamsploit.rc.primary
 fi
@@ -68,7 +68,7 @@ if [ $TS_NEXPOSE_AUTOSCAN == 1 ]; then
 	echo "nexpose_scan $SCAN_RANGE" >> .teamsploit.rc.primary
 fi
 if [ $TS_OPENVAS_AUTOSCAN == 1 ]; then
-	echo "openvas_target_create \"teamsploit\" $SCAN_RANGE \"targets\" >> .teamsploit.rc.primary
+	echo "openvas_target_create \"teamsploit\" $SCAN_RANGE \"targets\"" >> .teamsploit.rc.primary
 	echo "openvas_task_create \"teamsploit Scan\" \"Scan teamsploit Targets\" 0 1" >> .teamsploit.rc.primary
 	echo "openvas_task_start 0" >> .teamsploit.rc.primary
 fi
