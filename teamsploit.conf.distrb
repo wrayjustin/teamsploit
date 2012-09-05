@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #  Change this to a '1' (no qoutes) when you finish editing this file...
-TS_CONFIG=1
+TS_CONFIG=0
 
 #  How many "primary" windows do you want?  Some people want more than one...
 TS_WINDOWS=1
@@ -86,6 +86,10 @@ TS_OPENVAS_HOST=127.0.0.1
 TS_OPENVAS_PORT=9390
 TS_OPENVAS_USER=openvas
 TS_OPENVAS_PASS=password
+
+#  Fully Automated Owning (MAKE SURE YOU HAVE A VULN SCANNER SETUP AND ENABLED)
+TS_AUTO_OWN=0
+TS_AUTO_OWN_JOBS=10
 
 #  Trojans - Right now, just Linux...(1=yes, 0=no)
 TS_TROJAN=0

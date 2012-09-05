@@ -44,6 +44,7 @@ echo "load autopost" >> .teamsploit.rc.primary
 echo "load openvas" >> .teamsploit.rc.primary
 echo "load nexpose" >> .teamsploit.rc.primary
 echo "load nessus" >> .teamsploit.rc.primary
+echo "load nessus_teamsploit" >> .teamsploit.rc.primary
 echo "load auto_exploit" >> .teamsploit.rc.primary
 echo "load pass_the_hash" >> .teamsploit.rc.primary
 echo "set AutoLoadStdapi false" >> .teamsploit.rc.primary
@@ -51,13 +52,24 @@ echo "set AutoLoadStdapi false" >> .teamsploit.rc.primary
 #  Connect to our Vuln Scanner(s)
 if [ $TS_NESSUS_CONNECT == 1 ]; then
 	echo "nessus_connect $TS_NESSUS_USER:$TS_NESSUS_PASS@$TS_NESSUS_HOST:$TS_NESSUS_PORT ok" >> .teamsploit.rc.primary
+	echo "nessus_teamsploit_connect $TS_NESSUS_USER:$TS_NESSUS_PASS@$TS_NESSUS_HOST:$TS_NESSUS_PORT ok" >> .teamsploit.rc.primary
 fi
 if [ $TS_NEXPOSE_CONNECT == 1 ]; then
 	echo "nexpose_connect $TS_NEXPOSE_USER:$TS_NEXPOSE_PASS@$TS_NEXPOSE_HOST:$TS_NEXPOSE_PORT ok" >> .teamsploit.rc.primary
 fi
-if [ $TS_NESSUS_CONNECT == 1 ]; then
+if [ $TS_OPENVAS_CONNECT == 1 ]; then
 	echo "openvas_connect $TS_OPENVAS_USER:$TS_OPENVAS_PASS@$TS_OPENVAS_HOST:$TS_OPENVAS_PORT ok" >> .teamsploit.rc.primary
 fi
+
+#  We can haz shared DB?
+if [ $TS_LOCAL == 0 ]; then
+	echo "db_connect $TS_DB_USER:$TS_DB_PASS@$TS_DB_HOST:$TS_DB_PORT/$TS_DB_NAME" >> .teamsploit.rc.primary
+fi
+
+#  Duplicate our Primary RC for Sub Primary Shells
+echo "clear" >> .teamsploit.rc.primary
+echo "show plugins" >> .teamsploit.rc.primary
+cp .teamsploit.rc.primary .teamsploit.rc.primary.sub
 
 #  Run Scans?
 SCAN_RANGE=`echo $TS_TARGET_RANGES | sed -e 's/;/\n/g' | sed -e 's/$/.0\/24/g' | tr '\n' ',' | sed -e 's/\,$//g'`
@@ -73,11 +85,6 @@ if [ $TS_OPENVAS_AUTOSCAN == 1 ]; then
 	echo "openvas_task_start 0" >> .teamsploit.rc.primary
 fi
 
-#  We can haz shared DB?  Soon...
-if [ $TS_LOCAL == 0 ]; then
-	echo "db_connect $TS_DB_USER:$TS_DB_PASS@$TS_DB_HOST:$TS_DB_PORT/$TS_DB_NAME" >> .teamsploit.rc.primary
-fi
-
 #  Are we running a MSFD/MSFRPCD Service?
 if [ $TS_SERVER == 1 ]; then
 	echo "load msfd ServerHost=$TS_MY_IP ServerPort=$TS_SERVER_MSFD_PORT" >> .teamsploit.rc.primary
@@ -86,6 +93,16 @@ fi
 
 echo "clear" >> .teamsploit.rc.primary
 echo "show plugins" >> .teamsploit.rc.primary
+
+if [ $TS_AUTO_OWN == 1 ];then
+	echo "hosts -d" >> .teamsploit.rc.primary
+	echo "nessus_teamsploit_scan_wait" >> .teamsploit.rc.primary
+	echo "nessus_teamsploit_report_get last" >> .teamsploit.rc.primary
+	echo "vuln_exploit -j $TS_AUTO_OWN_JOBS" >> .teamsploit.rc.primary
+	echo "pass_the_hash -j $TS_AUTO_OWN_JOBS" >> .teamsploit.rc.primary
+	echo "clear" >> .teamsploit.rc.primary
+	echo "sessions -l" >> .teamsploit.rc.primary
+fi
 
 rm /tmp/autopost.rb.* 2> /dev/null
 

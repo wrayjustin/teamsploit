@@ -46,7 +46,11 @@ echo "TeamSploit - Pen Testing With Friends"
 
 echo -n "Loading Enviroment..."
 for i in $(seq 1 $TS_WINDOWS); do
-	gnome-terminal -e 'sudo msfconsole -m .msf -r .teamsploit.rc.primary' -t "TeamSploit: Primary $i"
+	if [ $i == 1 ]; then
+		gnome-terminal -e 'sudo msfconsole -m .msf -r .teamsploit.rc.primary' -t "TeamSploit: Primary $i"
+	else
+		gnome-terminal -e 'sudo msfconsole -m .msf -r .teamsploit.rc.primary.sub' -t "TeamSploit: Primary $i"
+	fi
 done
 gnome-terminal -e 'sudo msfconsole -m .msf -r .teamsploit.rc.listener' -t 'TeamSploit: Listener'
 if [ $TS_MSFD_CONNECT == 1 ]; then
