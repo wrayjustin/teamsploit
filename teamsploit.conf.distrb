@@ -91,6 +91,13 @@ TS_OPENVAS_PASS=password
 TS_AUTO_OWN=0
 TS_AUTO_OWN_JOBS=10
 
+#  SploitWatch - Player Tracking and Reporting - Sends Exploitation/Activity Information to Centralized Server
+TS_SPLOITWATCH=0						# Load, 1=yes, 0=no
+TS_SPLOITWATCH_HANDLE=Unknown					# Attacker Handle - Used to keep track of individual attackers
+TS_SPLOITWATCH_EVENT=Unknown					# Event ID - Used to keep track of separate events/engagements
+TS_SPLOITWATCH_SRV_URI=http://192.168.1.100/sploitwatcher.php	# URI to the SploitWatch receiving end
+TS_SPLOITWATCH_CMD_REPORT=true					# true or false - do you want to send all commands being executed (within Metasploit and sessions)
+
 #  Trojans - Right now, just Linux...(1=yes, 0=no)
 TS_TROJAN=0
 TS_TROJAN_PATH=/etc/fonts/admin/.proc

@@ -40,6 +40,15 @@ echo "clear" >> .teamsploit.rc.listener
 echo "jobs -v" >> .teamsploit.rc.listener
 
 echo "set Prompt teamsploit" > .teamsploit.rc.primary
+
+if [ $TS_SPLOITWATCH == 1]; then
+	echo "load sploitwatch" >> .teamsploit.rc.primary
+	echo "set SPLOITWATCH_CMD_REPORT $TS_SPLOITWATCH_CMD_REPORT" >> .teamsploit.rc.primary
+	echo "set SPLOITWATCH_SRV_URI $TS_SPLOITWATCH_SRV_URI" >> .teamsploit.rc.primary
+	echo "set SPLOITWATCH_EVENT $TS_SPLOITWATCH_EVENT" >> .teamsploit.rc.primary
+	echo "set SPLOITWATCH_HANDLE $TS_SPLOITWATCH_HANDLE" >> .teamsploit.rc.primary
+fi
+
 echo "load autopost" >> .teamsploit.rc.primary
 echo "load openvas" >> .teamsploit.rc.primary
 echo "load nexpose" >> .teamsploit.rc.primary
