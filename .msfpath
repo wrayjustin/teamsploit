@@ -19,4 +19,4 @@
 
 MSFCON=`whereis msfconsole | awk {' print $2 '}`
 MSFCONPATH=`readlink $MSFCON | sed -e 's/\/app\/msfconsole//'`
-find $MSFCONPATH -type d -name "msf3" 2>/dev/null
+find $MSFCONPATH -type d -name "msf3" 2>/dev/null | sed -e 's/\/msf3$//'
