@@ -41,7 +41,7 @@ echo "jobs -v" >> .teamsploit.rc.listener
 
 echo "set Prompt teamsploit" > .teamsploit.rc.primary
 
-if [ $TS_SPLOITWATCH == 1]; then
+if [ $TS_SPLOITWATCH == 1 ]; then
 	echo "load sploitwatch" >> .teamsploit.rc.primary
 	echo "set SPLOITWATCH_CMD_REPORT $TS_SPLOITWATCH_CMD_REPORT" >> .teamsploit.rc.primary
 	echo "set SPLOITWATCH_SRV_URI $TS_SPLOITWATCH_SRV_URI" >> .teamsploit.rc.primary
