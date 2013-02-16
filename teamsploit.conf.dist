@@ -20,6 +20,9 @@
 #  Change this to a '1' (no qoutes) when you finish editing this file...
 TS_CONFIG=0
 
+#  TeamSploit GUI - CURRENTLY IN ALPHA (Unstable) (1=GUI, 0=CLI)
+TS_GUI=0
+
 #  How many "primary" windows do you want?  Some people want more than one...
 TS_WINDOWS=1
 
