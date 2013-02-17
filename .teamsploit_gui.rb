@@ -178,7 +178,11 @@ class TeamSploitMDI < Gtk::Window
       terminal = Vte::Terminal.new
       terminal.set_font("Monospace 10", Vte::TerminalAntiAlias::FORCE_ENABLE)
       terminal.fork_command
-      terminal.feed_child(command + "\n")
+      if command.nil?
+        terminal.fork_command
+      else
+        terminal.feed_child(command + "\n")
+      end
       terminal.signal_connect("child-exited") do |widget|
         widget.destroy
         self.remove(@notebook.page)
@@ -188,7 +192,7 @@ class TeamSploitMDI < Gtk::Window
           context.popup(nil, nil, event.button, event.time)
         end
       end
-      tab.add_with_viewport(terminal)
+      tab.add(terminal)
       @pages.push(terminal)
 
       return tab
