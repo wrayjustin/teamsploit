@@ -34,7 +34,7 @@ class TeamSploitMDI < Gtk::Window
     @pages = Array.new
     @version = `svn info | grep "Last Changed Rev:" | awk {' print $4 '}`
     @version.chomp!.strip!
-    @gui_version = "0.03 Alpha"
+    @gui_version = "0.04 Alpha"
     @notebook = Gtk::MDI::Notebook.new
     layout = Gtk::VBox.new( false, 0 )
     add(layout)
@@ -297,7 +297,7 @@ class TeamSploitMDI < Gtk::Window
       if event.kind_of? Gdk::EventKey  and event.keyval == 65293
         if !widget.text.empty?
           chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
-          chat_box.buffer.insert_at_cursor("[#{irc_nick}]  " + widget.text + "\n")
+          chat_box.buffer.insert(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), "[#{irc_nick}]  " + widget.text + "\n")
           @irc.message(irc_chan, widget.text)
           msg_field.text = ""
           chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
@@ -318,7 +318,7 @@ class TeamSploitMDI < Gtk::Window
 
     @irc.on :channel do |event_data|
       chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
-      chat_box.buffer.insert_at_cursor("[" + event_data[:nick] + "] " + event_data[:message] + "\n")
+      chat_box.buffer.insert(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), "[" + event_data[:nick] + "] " + event_data[:message] + "\n")
       chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
     end
 
