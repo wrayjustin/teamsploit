@@ -34,7 +34,7 @@ class TeamSploitMDI < Gtk::Window
     @pages = Array.new
     @version = `svn info | grep "Last Changed Rev:" | awk {' print $4 '}`
     @version.chomp!.strip!
-    @gui_version = "0.02 Alpha"
+    @gui_version = "0.03 Alpha"
     @notebook = Gtk::MDI::Notebook.new
     layout = Gtk::VBox.new( false, 0 )
     add(layout)
@@ -238,7 +238,9 @@ class TeamSploitMDI < Gtk::Window
   end
 
   def load_shared
-    tab = build_tab(nil)
+    host = @config['TS_MSFD_HOST']
+    port = @config['TS_MSFD_PORT']
+    tab = build_tab("nc #{host} #{port}")
     @notebook.add_document(Gtk::MDI::Document.new(tab, "Shared"))
   end
 
@@ -415,7 +417,7 @@ class TeamSploitMDI < Gtk::Window
       config.username = 'TeamSploit'
       config.real_name = 'TeamSploit'
       config.ssl = irc_ssl
-#      config.verbose = false
+      config.verbose = false
     end
   end
 
