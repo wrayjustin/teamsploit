@@ -45,5 +45,5 @@ fi
 echo "TeamSploit - Pen Testing With Friends"
 
 echo -n "Loading Graphical Enviroment..."
-./.teamsploit_gui.rb $TS_WINDOWS $TS_MSFD_CONNET
+./.teamsploit_gui.rb
 echo "Done"

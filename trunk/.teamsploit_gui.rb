@@ -17,21 +17,24 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+require 'rubygems'
 require 'gtk2'
 require '.gui/mdi'
 require 'vte'
+require 'ponder'
+require 'eventmachine'
 
 # A TeamSploit MDI window.
 class TeamSploitMDI < Gtk::Window
 
   def initialize
     super
-    @primary_windows = Integer(ARGV[0])
+    self.load_config
     @loaded_primaries = 0
     @pages = Array.new
     @version = `svn info | grep "Last Changed Rev:" | awk {' print $4 '}`
     @version.chomp!.strip!
-    @gui_version = "0.01 Alpha"
+    @gui_version = "0.02 Alpha"
     @notebook = Gtk::MDI::Notebook.new
     layout = Gtk::VBox.new( false, 0 )
     add(layout)
@@ -43,14 +46,33 @@ class TeamSploitMDI < Gtk::Window
    self.build_menubar
   end
 
-  def load
-    server = ARGV[1]
+  def load_config
+    @config = Hash.new
+    File.open("teamsploit.conf", "r") do |infile|
+      while (line = infile.gets)
+        if line =~ /^#/
+          next
+        elsif line =~ /=/
+          line.gsub!(/#.*/, '')
+          values = line.split(/=/)
+          key = values[0].to_s.lstrip.rstrip
+          value = values[1].to_s.lstrip.rstrip
+          @config[key] = value
+        end
+      end
+    end
+  end
 
-   if @primary_windows.nil? || @primary_windows == 0
-     @primary_windows = 1
+  def load
+    primary_windows = @config['TS_WINDOWS'].to_i
+    server = @config['TS_MSFD_CONNECT'].to_i
+    chat = @config['TS_IRC'].to_i
+
+   if primary_windows.nil? || primary_windows == 0
+     primary_windows = 1
    end
 
-    @primary_windows.times do |i|
+    primary_windows.times do |i|
       num = i+1
       if num == 1
         self.load_primary(num)
@@ -59,12 +81,16 @@ class TeamSploitMDI < Gtk::Window
       end
     end
 
-    unless server.nil?
+    if server == 1
       self.load_shared
     end
 
     self.load_listener
-    self.load_chat
+
+    if chat == 1
+      self.load_chat
+    end
+
     self.load_about
 
     @notebook.show_all
@@ -92,6 +118,7 @@ class TeamSploitMDI < Gtk::Window
     item2 = Gtk::MenuItem.new("Exit")
     item2.signal_connect "activate" do
       Gtk.main_quit
+      exit
     end
 
     submenu.append(item1)
@@ -221,8 +248,106 @@ class TeamSploitMDI < Gtk::Window
   end    
 
   def load_chat
-    tab = build_tab(nil)
-    @notebook.add_document(Gtk::MDI::Document.new(tab, "Chat"))
+    irc_nick = @config['TS_IRC_NICK']
+    irc_srv = @config['TS_IRC_SERVER']
+    irc_port = @config['TS_IRC_PORT']
+    irc_chan = "#" + @config['TS_IRC_CHANNEL']
+    irc_ssl = @config['TS_IRC_SSL']
+
+    if irc_ssl == 0
+      irc_ssl = false
+    else
+      irc_ssl = true
+    end
+
+    layout = Gtk::VBox.new( false, 0 )
+    font = Pango::FontDescription.new("Monospace 10")
+
+    chat_area = Gtk::HBox.new(false, 0)
+ 
+    chat_box_win = Gtk::ScrolledWindow.new
+    chat_box_win.set_policy(Gtk::POLICY_AUTOMATIC,Gtk::POLICY_ALWAYS)
+
+    chat_box = Gtk::TextView.new
+    chat_box.set_editable(false)
+    chat_box.set_cursor_visible(false)
+    chat_box.modify_font(font)
+    chat_box.buffer.text = "Chat Loading...Please Wait..."
+    chat_box_win.add(chat_box)
+
+    user_store = Gtk::TreeStore.new(String)
+
+    user_list = Gtk::TreeView.new(user_store)
+    user_list.set_size_request(100, 0)
+    user_list.selection.mode = Gtk::SELECTION_NONE
+
+    user_renderer = Gtk::CellRendererText.new
+    user_col = Gtk::TreeViewColumn.new("Users", user_renderer, :text => 0)
+    user_list.append_column(user_col)
+
+    chat_area.pack_start(chat_box_win, true, true, 10)
+    chat_area.pack_start(user_list, false, false, 10)
+
+    msg_field = Gtk::Entry.new
+    msg_field.modify_font(font)
+    msg_field.signal_connect "key-release-event" do |widget, event|
+      if event.kind_of? Gdk::EventKey  and event.keyval == 65293
+        if !widget.text.empty?
+          chat_box.buffer.insert_at_cursor("[#{irc_nick}]  " + widget.text + "\n")
+          @irc.message(irc_chan, widget.text)
+          msg_field.text = ""
+          chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
+        end
+      end
+    end
+
+    layout.pack_start(chat_area, true, true, 10)
+    layout.pack_start(msg_field, false, false, 10)
+
+    self.load_irc(irc_nick, irc_srv, irc_port, irc_chan, irc_ssl)
+
+    @irc.on :connect do
+      @irc.join irc_chan
+      chat_box.buffer.text = "Chat Loaded...Talking In #{irc_chan}\n"
+      chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
+    end
+
+    @irc.on :channel do |event_data|
+      chat_box.buffer.insert_at_cursor("[" + event_data[:nick] + "] " + event_data[:message] + "\n")
+      chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
+    end
+
+    @irc.on :join do |event_data|
+      user_store.clear
+      @irc.raw("NAMES " + irc_chan)
+    end
+
+    @irc.on :part do |event_data|
+      user_store.clear
+      @irc.raw("NAMES " + irc_chan)
+    end
+
+    @irc.on 353 do |event_data|
+      user_store.clear
+      users = event_data[:params].split(/=/)[1].rstrip.lstrip.split(/\s+/).drop(1)
+      users.each do |user|
+        user.gsub!(/:/, '') if user =~ /:/
+        newuser = user_store.append(nil)
+        newuser[0] = user
+      end        
+    end
+
+    @irc.on 332 do |event_data|
+      chat_box.buffer.insert_at_cursor("[ -TOPIC- ] " + event_data[:params] + "\n")
+      chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
+    end
+
+    @irc.on :topic do |event_data|
+      chat_box.buffer.insert_at_cursor("[ -TOPIC- ] " + event_data[:topic] + "\n")
+      chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
+    end
+   
+    @notebook.add_document(Gtk::MDI::Document.new(layout, "Chat"))
   end
 
   def load_about
@@ -282,21 +407,63 @@ class TeamSploitMDI < Gtk::Window
     @notebook.remove_page(page)
   end
 
+  def load_irc(irc_nick, irc_srv, irc_port, irc_chan, irc_ssl)
+    @irc = Ponder::Thaum.new do |config|
+      config.server = irc_srv
+      config.port = irc_port
+      config.nick = irc_nick
+      config.username = 'TeamSploit'
+      config.real_name = 'TeamSploit'
+      config.ssl = irc_ssl
+#      config.verbose = false
+    end
+  end
+
+  def irc_connect
+    if @config['TS_IRC'].to_i == 1
+      @irc.connect
+    end
+  end
+
   attr_reader :notebook
-  attr_accessor :version, :gui_version, :primary_windows, :loaded_primaries, :pages
+  attr_accessor :config, :version, :gui_version, :loaded_primaries, :pages, :irc
 end
 
-# Initialize GTK
-Gtk::init
+class TeamSploitGUI  
+  def initialize
+    # Initialize GTK
+    Gtk::init
 
-controller = Gtk::MDI::Controller.new(TeamSploitMDI, :notebook)
-controller.signal_connect('window_removed') do |controller, window, last|
-  Gtk::main_quit if last
+    # Initialize the MDI controller with our window class and the 
+    # symbol of the attribute used to access the notebook
+    controller = Gtk::MDI::Controller.new(TeamSploitMDI, :notebook)
+    # Quit once all windows have been closed
+    controller.signal_connect('window_removed') do |controller, window, last|
+      if last
+        Gtk::main_quit
+        exit
+      end
+    end
+
+    @teamsploit = controller.open_window
+    @teamsploit.notebook.set_tab_pos(Gtk::POS_BOTTOM)
+    @teamsploit.load
+  end
+
+  def chat_connect
+    @teamsploit.irc_connect
+  end
+
+  def load_window
+    Gtk::main
+  end
+
+  attr_accessor :teamsploit
 end
 
-teamsploit = controller.open_window
-teamsploit.notebook.set_tab_pos(Gtk::POS_BOTTOM)
-teamsploit.load
-
-# Start it all up
-Gtk::main
+EM::run do
+  client = TeamSploitGUI.new
+  client.chat_connect
+  give_tick = proc { Gtk::main_iteration; EM.next_tick(give_tick); }
+  give_tick.call
+end
