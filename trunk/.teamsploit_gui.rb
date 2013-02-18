@@ -203,6 +203,7 @@ class TeamSploitMDI < Gtk::Window
       tab.set_policy(Gtk::POLICY_AUTOMATIC,Gtk::POLICY_ALWAYS)
       context = self.build_context_menu
       terminal = Vte::Terminal.new
+      terminal.set_scrollback_lines(1000)
       terminal.set_font("Monospace 10", Vte::TerminalAntiAlias::FORCE_ENABLE)
       terminal.fork_command
       if command.nil?
@@ -295,6 +296,7 @@ class TeamSploitMDI < Gtk::Window
     msg_field.signal_connect "key-release-event" do |widget, event|
       if event.kind_of? Gdk::EventKey  and event.keyval == 65293
         if !widget.text.empty?
+          chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
           chat_box.buffer.insert_at_cursor("[#{irc_nick}]  " + widget.text + "\n")
           @irc.message(irc_chan, widget.text)
           msg_field.text = ""
@@ -315,6 +317,7 @@ class TeamSploitMDI < Gtk::Window
     end
 
     @irc.on :channel do |event_data|
+      chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
       chat_box.buffer.insert_at_cursor("[" + event_data[:nick] + "] " + event_data[:message] + "\n")
       chat_box.scroll_to_iter(chat_box.buffer.get_iter_at_line(chat_box.buffer.line_count), 0, false, 0, 0)
     end
