@@ -21,6 +21,8 @@ require 'rubygems'
 require 'gtk2'
 require '.gui/mdi'
 require 'vte'
+require 'webkit'
+require 'open-uri'
 require 'ponder'
 require 'eventmachine'
 
@@ -115,14 +117,23 @@ class TeamSploitMDI < Gtk::Window
       @notebook.show_all
     end
 
-    item2 = Gtk::MenuItem.new("Exit")
+    item2 = Gtk::MenuItem.new("New Browser Tab...")
     item2.signal_connect "activate" do
+      browser = self.load_browser("http://www.teamsploit.com/")
+      @notebook.add_document(Gtk::MDI::Document.new(browser, "Browser"))
+      @pages.push(browser)
+      @notebook.show_all
+    end
+
+    item3 = Gtk::MenuItem.new("Exit")
+    item3.signal_connect "activate" do
       Gtk.main_quit
       exit
     end
 
     submenu.append(item1)
     submenu.append(item2)
+    submenu.append(item3)
     menu.set_submenu(submenu)
 
    return menu
@@ -398,14 +409,54 @@ class TeamSploitMDI < Gtk::Window
   end
 
   def load_help
-    help = Gtk::TextView.new
-    help.set_editable(false)
-    help.set_cursor_visible(false)
-    font = Pango::FontDescription.new("Monospace 10")
-    help.modify_font(font)
-    help.buffer.text = "Help Documentation Goes Here..."
+    help = load_browser("http://www.teamsploit.com/faq.php")
     @notebook.add_document(Gtk::MDI::Document.new(help, "Help"))
     @pages.push(help)
+  end
+
+  def load_browser(url)
+    layout = Gtk::VBox.new( false, 0 )
+    url_area = Gtk::HBox.new(false, 0)
+    font = Pango::FontDescription.new("Monospace 10")
+
+    browser = WebKit::WebView.new
+    browser.open(url)
+
+    url_box = Gtk::Entry.new
+    url_box.modify_font(font)
+    url_box.signal_connect "key-release-event" do |widget, event|
+      if event.kind_of? Gdk::EventKey  and event.keyval == 65293
+        if !widget.text.empty?
+          browser.open(widget.text)
+        end
+      end
+    end
+
+    browser.signal_connect "navigation-policy-decision-requested"  do |widget, event, request|
+      url_box.text = request.uri
+      p
+    end
+
+    search_box = Gtk::Entry.new
+    search_box.modify_font(font)
+    search_box.signal_connect "key-release-event" do |widget, event|
+      if event.kind_of? Gdk::EventKey  and event.keyval == 65293
+        if !widget.text.empty?
+          browser.open("http://www.google.com/search?btnG=1&pws=0&q=" + URI::encode(widget.text))
+        end
+      end
+    end
+
+    url_box.text = url
+    search_box.text = "Search Google..."
+
+    url_area.pack_start(url_box, true, true, 10)
+    url_area.pack_start(search_box, false, false, 10)
+
+    layout.pack_start(url_area, false, false, 10)
+    layout.pack_start(browser, true, true, 10)
+
+    return layout
   end
 
   def remove(page)
