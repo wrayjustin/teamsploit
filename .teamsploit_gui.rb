@@ -36,8 +36,8 @@ class TeamSploitMDI < Gtk::Window
     @pages = Array.new
     @version = `svn info | grep "Last Changed Rev:" | awk {' print $4 '}`
     @version.chomp!.strip!
-    @gui_version = "0.06 Alpha"
-    @notebook = Gtk::MDI::Notebook.new
+    @gui_version = "0.07 Alpha"
+    self.load_notebook
     layout = Gtk::VBox.new( false, 0 )
     self.add(layout)
     menu = self.build_menubar
@@ -62,6 +62,17 @@ class TeamSploitMDI < Gtk::Window
           @config[key] = value
         end
       end
+    end
+  end
+
+  def load_notebook
+    @notebook = Gtk::MDI::Notebook.new
+
+    @notebook.signal_connect('document_removed') do |notebook, window, last|
+      if window.title == "Chat"
+        self.irc_disconnect
+      end
+      window.widget.destroy
     end
   end
 
@@ -478,6 +489,10 @@ class TeamSploitMDI < Gtk::Window
     if @config['TS_IRC'].to_i == 1
       @irc.connect
     end
+  end
+
+  def irc_disconnect
+    @irc.instance_variable_get(:@connection).close_connection
   end
 
   attr_reader :notebook
