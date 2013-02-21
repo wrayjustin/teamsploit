@@ -127,8 +127,7 @@ class TeamSploitMDI < Gtk::Window
 
     item3 = Gtk::MenuItem.new("Exit")
     item3.signal_connect "activate" do
-      Gtk.main_quit
-      exit
+      EventMachine::stop_event_loop
     end
 
     submenu.append(item1)
@@ -496,8 +495,7 @@ class TeamSploitGUI
     # Quit once all windows have been closed
     controller.signal_connect('window_removed') do |controller, window, last|
       if last
-        Gtk::main_quit
-        exit
+        EventMachine::stop_event_loop
       end
     end
 
