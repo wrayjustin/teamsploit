@@ -36,16 +36,16 @@ class TeamSploitMDI < Gtk::Window
     @pages = Array.new
     @version = `svn info | grep "Last Changed Rev:" | awk {' print $4 '}`
     @version.chomp!.strip!
-    @gui_version = "0.04 Alpha"
+    @gui_version = "0.06 Alpha"
     @notebook = Gtk::MDI::Notebook.new
     layout = Gtk::VBox.new( false, 0 )
-    add(layout)
+    self.add(layout)
     menu = self.build_menubar
     layout.pack_start(menu, false, false, 0)
     layout.pack_start(@notebook, true, true, 0)
     set_title("TeamSploit (Rev:#{self.version})")
     set_size_request(800,600)
-   self.build_menubar
+    self.build_menubar
   end
 
   def load_config
@@ -486,13 +486,14 @@ end
 
 class TeamSploitGUI  
   def initialize
-    # Initialize GTK
     Gtk::init
+    self.start_teamsploit
+    self.load_splash
+  end
 
-    # Initialize the MDI controller with our window class and the 
-    # symbol of the attribute used to access the notebook
+  def start_teamsploit
     controller = Gtk::MDI::Controller.new(TeamSploitMDI, :notebook)
-    # Quit once all windows have been closed
+
     controller.signal_connect('window_removed') do |controller, window, last|
       if last
         EventMachine::stop_event_loop
@@ -500,6 +501,7 @@ class TeamSploitGUI
     end
 
     @teamsploit = controller.open_window
+    @teamsploit.hide
     @teamsploit.notebook.set_tab_pos(Gtk::POS_BOTTOM)
     @teamsploit.load
   end
@@ -511,6 +513,28 @@ class TeamSploitGUI
   def load_window
     Gtk::main
   end
+
+  def load_splash
+    splash = Gtk::Window.new
+    splash.set_title("TeamSploit")
+    splash.set_modal(true)
+    splash.set_decorated(false)
+    splash.set_window_position(Gtk::Window::POS_CENTER)
+    splash.set_destroy_with_parent(true)
+    splash.set_resizable(false)
+    splash.set_keep_above(true)
+    vbox = Gtk::VBox.new
+    logo = Gtk::Image.new(".teamsploit.png")
+    vbox.pack_start(logo,false,false)
+    splash.add(vbox)
+    splash.show_all
+    timeout = Gtk.timeout_add(3000) {
+      splash.hide
+      @teamsploit.show
+      Gtk.timeout_remove(timeout)
+    }
+  end
+
 
   attr_accessor :teamsploit
 end
