@@ -32,11 +32,14 @@ source teamsploit.conf
 #  Notice
 echo "You may need to authenticate, as MSF typical requires administrative rights"
 
-#  Provide Config Wizard
-sudo ./.teamsploit_config_gui.rb
+#  Are we skipping Config Wizard?
+if [ $TS_SKIP_CONFIG_WIZ == 0 ]; then
+	#  Provide Config Wizard
+	sudo ./.teamsploit_config_gui.rb
 
-#  Reconfig...
-source teamsploit.conf
+	#  Reconfig...
+	source teamsploit.conf
+fi
 
 #  Did you config it yet?
 if [ $TS_CONFIG != 1 ]; then

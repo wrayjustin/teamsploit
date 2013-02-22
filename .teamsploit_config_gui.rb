@@ -54,7 +54,8 @@ def build_config
 end
 
 def assistant_close (assistant)
-  build_config
+  new_config_file = build_config
+  File.open("teamsploit.conf", "w") {|file| file.puts new_config_file}
   assistant.destroy
 end
 
@@ -162,6 +163,7 @@ def load_general_page
 
   page.pack_start(load_entry("Primary Network Interface:", "TS_MY_INT"), false, false, 10)
   page.pack_start(load_entry("Number of Primary Consoles:", "TS_WINDOWS"), false, false, 10)
+  page.pack_start(load_toggle("Do you wish to SKIP the configuration wizard in the future?", "TS_SKIP_CONFIG_WIZ", "yes"), false, false, 10)
 end
 
 def load_database_page
