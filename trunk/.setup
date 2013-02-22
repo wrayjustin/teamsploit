@@ -155,6 +155,11 @@ cat .msf/plugins/autopost.rb | grep -vf .msf/plugins/.autopost.source.autotarget
 sudo cp -R ./.msf/plugins/*.rb $TS_MSF_PATH/msf3/plugins/
 sudo cp -R ./.msf/scripts/meterpreter/*.rb $TS_MSF_PATH/msf3/scripts/meterpreter/
 
+if [ $TS_SERVER == 1 ]; then
+	sudo msfd -a $TS_MY_IP -p $TS_SERVER_MSFD_PORT
+	sudo msfrpcd -a $TS_MY_IP -p $TS_SERVER_MSFRPCD_PORT -U $TS_SERVER_MSFRPCD_USER -P $TS_SERVER_MSFRPCD_PASS
+fi
+
 if [ $TS_TROJAN == 1 ]; then
 	./.gentrojan
 fi
