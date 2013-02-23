@@ -77,6 +77,13 @@ class TeamSploitMDI < Gtk::Window
         @listener_menu_item = true;
         update_menu
       end
+      @pages.delete_at(@notebook.page)
+      new_pages = Array.new
+      @pages.each do |page|
+        new_pages.push(page)
+      end
+      @pages = new_pages
+
       window.widget.destroy
     end
   end
