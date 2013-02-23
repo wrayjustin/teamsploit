@@ -126,6 +126,7 @@ class TeamSploitMDI < Gtk::Window
     item1.signal_connect "activate" do
       self.load_primary_sub(@loaded_primaries + 1)
       @notebook.show_all
+      @notebook.set_page(@pages.size)
     end
 
     item2 = Gtk::MenuItem.new("New Browser Tab...")
@@ -134,6 +135,7 @@ class TeamSploitMDI < Gtk::Window
       @notebook.add_document(Gtk::MDI::Document.new(browser, "Browser"))
       @pages.push(browser)
       @notebook.show_all
+      @notebook.set_page(@pages.size)
     end
 
     item3 = Gtk::MenuItem.new("Exit")
