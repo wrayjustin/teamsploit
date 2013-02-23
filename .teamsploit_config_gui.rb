@@ -39,7 +39,7 @@ def load_config
 end
 
 def build_config
-  config_file = File.read("teamsploit.conf")
+  config_file = File.read("teamsploit.conf.dist")
 
   @new_config.each_pair do |key, value|
     key.gsub!(/^\"/, '')
