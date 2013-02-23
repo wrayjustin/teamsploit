@@ -40,12 +40,11 @@ class TeamSploitMDI < Gtk::Window
     self.load_notebook
     layout = Gtk::VBox.new( false, 0 )
     self.add(layout)
-    menu = self.build_menubar
-    layout.pack_start(menu, false, false, 0)
+    @menu = self.build_menubar
+    layout.pack_start(@menu, false, false, 0)
     layout.pack_start(@notebook, true, true, 0)
     set_title("TeamSploit (Rev:#{self.version})")
     set_size_request(800,600)
-    self.build_menubar
   end
 
   def load_config
@@ -71,6 +70,12 @@ class TeamSploitMDI < Gtk::Window
     @notebook.signal_connect('document_removed') do |notebook, window, last|
       if window.title == "Chat"
         self.irc_disconnect
+        @chat_menu_item = true;
+        update_menu
+      end
+      if window.title == "Listener"
+        @listener_menu_item = true;
+        update_menu
       end
       window.widget.destroy
     end
@@ -109,13 +114,23 @@ class TeamSploitMDI < Gtk::Window
     @notebook.show_all
   end
 
-  def build_menubar
-    menu_bar = Gtk::MenuBar.new
-    menu_bar.append(self.build_menubar_file)
-    menu_bar.append(self.build_menubar_edit)
-    menu_bar.append(self.build_menubar_help)
+  def update_menu
+    @menu.remove(@file_menu)
+    @file_menu = build_menubar_file
+    @menu.prepend(@file_menu)
+    @menu.show_all
+  end
 
-    return menu_bar
+  def build_menubar
+    @menu_bar = Gtk::MenuBar.new
+
+   @file_menu = self.build_menubar_file
+    @menu_bar.append(@file_menu)
+   
+    @menu_bar.append(self.build_menubar_edit)
+    @menu_bar.append(self.build_menubar_help)
+
+    return @menu_bar
   end
 
   def build_menubar_file
@@ -126,7 +141,7 @@ class TeamSploitMDI < Gtk::Window
     item1.signal_connect "activate" do
       self.load_primary_sub(@loaded_primaries + 1)
       @notebook.show_all
-      @notebook.set_page(@pages.size)
+      @notebook.set_page(@notebook.n_pages - 1)
     end
 
     item2 = Gtk::MenuItem.new("New Browser Tab...")
@@ -135,7 +150,7 @@ class TeamSploitMDI < Gtk::Window
       @notebook.add_document(Gtk::MDI::Document.new(browser, "Browser"))
       @pages.push(browser)
       @notebook.show_all
-      @notebook.set_page(@pages.size)
+      @notebook.set_page(@notebook.n_pages - 1)
     end
 
     item3 = Gtk::MenuItem.new("Exit")
@@ -143,8 +158,30 @@ class TeamSploitMDI < Gtk::Window
       EventMachine::stop_event_loop
     end
 
+    if @listener_menu_item
+      item4 = Gtk::MenuItem.new("Open Listener Tab...")
+      item4.signal_connect "activate" do
+        self.load_listener
+        @notebook.show_all
+        @notebook.set_page(@notebook.n_pages - 1)
+      end
+    end
+
+    if @chat_menu_item
+      item5 = Gtk::MenuItem.new("Open Chat Tab...")
+      item5.signal_connect "activate" do
+        self.load_chat
+        self.irc_connect
+        @notebook.show_all
+        @notebook.set_page(@notebook.n_pages - 1)
+
+      end
+    end
+
     submenu.append(item1)
     submenu.append(item2)
+    submenu.append(item4) if @listener_menu_item
+    submenu.append(item5) if @chat_menu_item
     submenu.append(item3)
     menu.set_submenu(submenu)
 
@@ -269,11 +306,17 @@ class TeamSploitMDI < Gtk::Window
   end
 
   def load_listener
+    @listener_menu_item = false
+    update_menu
+
     tab = build_tab("sudo msfconsole -m .msf -r .teamsploit.rc.listener")
     @notebook.add_document(Gtk::MDI::Document.new(tab, "Listener"))
   end    
 
   def load_chat
+    @chat_menu_item = false
+    update_menu
+
     irc_nick = @config['TS_IRC_NICK']
     irc_srv = @config['TS_IRC_SERVER']
     irc_port = @config['TS_IRC_PORT']
@@ -376,6 +419,7 @@ class TeamSploitMDI < Gtk::Window
     end
    
     @notebook.add_document(Gtk::MDI::Document.new(layout, "Chat"))
+    @pages.push(layout)
   end
 
   def load_about
@@ -498,7 +542,7 @@ class TeamSploitMDI < Gtk::Window
   end
 
   attr_reader :notebook
-  attr_accessor :config, :version, :gui_version, :loaded_primaries, :pages, :irc
+  attr_accessor :config, :version, :gui_version, :loaded_primaries, :pages, :irc, :menu, :file_menu
 end
 
 class TeamSploitGUI  
