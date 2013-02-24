@@ -188,7 +188,7 @@ end
 def load_teammates_page
   page = Gtk::VBox.new(false, 10)
 
-  page.pack_start(load_toggle("Do you wish to share shells with your self and teammates?", "TS_SHARE_SHELLS", "yes"), false, false, 10)
+  page.pack_start(load_toggle("Do you wish to share shells with yourself and teammates? (just set the next line BLANK if you are running solo)", "TS_SHARE_SHELLS", "yes"), false, false, 10)
   page.pack_start(load_entry("Teammate Addresses:", "TS_TEAM_MATES"), false, false, 10)
   page.pack_start(load_entry("Team Port (Primary):", "TS_TEAM_PORT"), false, false, 10)
   page.pack_start(load_entry("Team Port (Secondary):", "TS_TEAM_PORT_2"), false, false, 10)
