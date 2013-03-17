@@ -17,6 +17,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-MSFCON=`whereis msfconsole | awk {' print $2 '}`
+MSFCON=`whereis msfconsole | tr ' ' '\n' | awk '{ if ( NR > 1  ) { print } }' | grep -vP "msfconsole\.framework|X11" | head -1`
 MSFCONPATH=`readlink $MSFCON | sed -e 's/\/app\/msfconsole//'`
 find $MSFCONPATH -type d -name "msf3" -o -type l -name "msf3" 2>/dev/null | sed -e 's/\/msf3$//'
