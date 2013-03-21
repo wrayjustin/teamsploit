@@ -19,4 +19,4 @@
 
 MSFCON=`whereis msfconsole | tr ' ' '\n' | awk '{ if ( NR > 1  ) { print } }' | grep -vP "msfconsole\.framework|X11" | head -1`
 MSFCONPATH=`readlink $MSFCON | sed -e 's/\/app\/msfconsole//'`
-find $MSFCONPATH -type d -name "msf3" -o -type l -name "msf3" 2>/dev/null | sed -e 's/\/msf3$//'
+find $MSFCONPATH -type d -name "msf3" -o -type l -name "msf3" 2>/dev/null | sed -e 's/\/msf3$//' | tail -1
