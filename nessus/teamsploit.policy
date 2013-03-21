@@ -1,5 +1,5 @@
 <NessusClientData_v2>
-<Policy><policyName>Teamsploit</policyName>
+<Policy><policyName>TeamSploit</policyName>
 <policyOwner>root</policyOwner>
 <visibility>private</visibility>
 <policyComments>Metasploit ONLY</policyComments>
