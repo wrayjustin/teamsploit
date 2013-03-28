@@ -21,7 +21,7 @@
 TS_CONFIG=0
 
 #  TeamSploit GUI - CURRENTLY IN ALPHA (Unstable) (1=GUI, 0=CLI)
-TS_GUI=0
+TS_GUI=1
 
 #  Skip GUI Configuration Wizard?
 TS_SKIP_CONFIG_WIZ=0
