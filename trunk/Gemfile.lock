@@ -1,0 +1,17 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    eventmachine (1.0.0)
+    gtk-webkit-ruby (0.0.5)
+      rubber-generate (>= 0.0.17)
+    ponder (0.2.0)
+      eventmachine (>= 0.12.10)
+    rubber-generate (0.0.17)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  eventmachine
+  gtk-webkit-ruby
+  ponder
