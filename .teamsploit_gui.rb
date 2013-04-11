@@ -18,7 +18,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 require 'rubygems'
-require 'bundler/setup'
 require 'gtk2'
 require '.gui/mdi'
 require 'vte'
