@@ -102,6 +102,13 @@ module Msf
 					return
 				end
 
+				#  Make sure LHOST is set
+				if (framework.datastore['LHOST'] == nil )
+			        	print_error("No LHOST set, where do we get the shells? go fix (must be global so setg instead of set)")
+			        	return
+				end
+
+
 				#  Check For Creds in Database
 				if framework.db.workspace.creds.length > 0
 					#  Loop Through Creds
@@ -124,7 +131,7 @@ module Msf
 								exploit.datastore['PAYLOAD'] = payload
 								exploit.datastore['RHOST'] = target
 								exploit.datastore['LPORT'] = port_list
-								exploit.datastore['LHOST']   = Rex::Socket.source_address(target)
+								exploit.datastore['LHOST']   = framework.datastore['LHOST']
 								exploit.datastore['SMBUser'] = cred.user
 								exploit.datastore['SMBPass'] = cred.pass
 								exploit.datastore['SMBDomain'] = domain
