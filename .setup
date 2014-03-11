@@ -103,8 +103,10 @@ fi
 echo "clear" >> .teamsploit.rc.primary
 echo "show plugins" >> .teamsploit.rc.primary
 
+WORKSPACE_NAME=`date +teamsploit_%s`
 if [ $TS_AUTO_OWN == 1 ];then
-	echo "hosts -d" >> .teamsploit.rc.primary
+	echo "workspace -a $WORKSPACE_NAME" >> .teamsploit.rc.primary
+	echo "workspace $WORKSPACE_NAME" >> .teamsploit.rc.primary
 	echo "nessus_teamsploit_scan_wait" >> .teamsploit.rc.primary
 	echo "nessus_teamsploit_report_get last" >> .teamsploit.rc.primary
 	echo "vuln_exploit -j $TS_AUTO_OWN_JOBS" >> .teamsploit.rc.primary
