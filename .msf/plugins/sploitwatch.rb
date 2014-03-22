@@ -19,6 +19,7 @@
 
 ##  Load HTTP
 require 'net/http'
+require 'net/https'
 require 'uri'
 
 ##  MSF Module
@@ -41,106 +42,63 @@ module Msf
 
 		##  Module Execution
 		def on_module_run(mod)
-			begin
-				http = Net::HTTP.post_form(URI.parse(self.framework.datastore['SPLOITWATCH_SRV_URI']), {'sploitwatch'=>'true', 'activityType'=>1, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>mod.datastore['LHOST'], 'module'=>mod.fullname, 'target'=>mod.datastore['RHOST'], 'details'=>mod.datastore})
-				if (self.framework.datastore['SPLOITWATCH_DEBUG'] == "true")
-					self.status(http.body)
-				end
-			rescue
-				self.status("error")
-			end
+			self.send_data({'sploitwatch'=>'true', 'activityType'=>1, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>mod.datastore['LHOST'], 'module'=>mod.fullname, 'target'=>mod.datastore['RHOST'], 'details'=>mod.datastore})
 		end
 
 		##  Module Error
 		def on_module_error(mod, error)
-			begin
-				http = Net::HTTP.post_form(URI.parse(self.framework.datastore['SPLOITWATCH_SRV_URI']), {'sploitwatch'=>'true', 'activityType'=>2, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>mod.datastore['LHOST'], 'module'=>mod.fullname, 'target'=>mod.datastore['RHOST'], 'details'=>error})
-				if (self.framework.datastore['SPLOITWATCH_DEBUG'] == "true")
-					self.status(http.body)
-				end
-			rescue
-				self.status("error")
-			end
+			self.send_data({'sploitwatch'=>'true', 'activityType'=>2, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>mod.datastore['LHOST'], 'module'=>mod.fullname, 'target'=>mod.datastore['RHOST'], 'details'=>error})
 		end
 
 		##  Module Success
 		def on_exploit_success(mod, session)
-			begin
-				http = Net::HTTP.post_form(URI.parse(self.framework.datastore['SPLOITWATCH_SRV_URI']), {'sploitwatch'=>'true', 'activityType'=>3, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>mod.datastore['LHOST'], 'module'=>mod.fullname, 'target'=>mod.datastore['RHOST'], 'details'=>session.type})
-				if (self.framework.datastore['SPLOITWATCH_DEBUG'] == "true")
-					self.status(http.body)
-				end
-			rescue
-				self.status("error")
-			end
+			self.send_data({'sploitwatch'=>'true', 'activityType'=>3, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>mod.datastore['LHOST'], 'module'=>mod.fullname, 'target'=>mod.datastore['RHOST'], 'details'=>session.type})
 		end
 
 		##  Session Opened
 		def on_session_open(session)
-			begin
-				playerIP = session.tunnel_to_s.split(':')
-				playerIP = playerIP[0]
-				target,vport = session.tunnel_peer.split(':')
-				http = Net::HTTP.post_form(URI.parse(self.framework.datastore['SPLOITWATCH_SRV_URI']), {'sploitwatch'=>'true', 'activityType'=>4, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>playerIP, 'module'=>session.type, 'target'=>target, 'details'=>session.via_exploit})
-				if (self.framework.datastore['SPLOITWATCH_DEBUG'] == "true")
-					self.status(http.body)
-				end
-			rescue
-				self.status("error")
-			end
+			self.send_data({'sploitwatch'=>'true', 'activityType'=>4, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>playerIP, 'module'=>session.type, 'target'=>target, 'details'=>session.via_exploit})
 		end
 
 		##  Session Closed
 		def on_session_close(session)
-			begin
-				playerIP = session.tunnel_to_s.split(':')
-				playerIP = playerIP[0]
-				target,vport = session.tunnel_peer.split(':')
-				http = Net::HTTP.post_form(URI.parse(self.framework.datastore['SPLOITWATCH_SRV_URI']), {'sploitwatch'=>'true', 'activityType'=>5, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>playerIP, 'module'=>session.type, 'target'=>target})
-				if (self.framework.datastore['SPLOITWATCH_DEBUG'] == "true")
-					self.status(http.body)
-				end
-			rescue
-				self.status("error")
-			end
+			self.send_data({'sploitwatch'=>'true', 'activityType'=>5, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>playerIP, 'module'=>session.type, 'target'=>target})
 		end
 
 		##  Sessions Command
 		def on_session_command(session, cmd)
 			target,vport = session.tunnel_peer.split(':')
 			if cmd == "exit"
-				begin
-					http = Net::HTTP.post_form(URI.parse(self.framework.datastore['SPLOITWATCH_SRV_URI']), {'sploitwatch'=>'true', 'activityType'=>5, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>session.session_host, 'module'=>session.type, 'target'=>target})				
-				if (self.framework.datastore['SPLOITWATCH_DEBUG'] == "true")
-					self.status(http.body)
-				end
-				rescue
-					self.status("error")
-				end
+				self.send_data({'sploitwatch'=>'true', 'activityType'=>5, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>session.session_host, 'module'=>session.type, 'target'=>target})
 			elsif (self.framework.datastore['SPLOITWATCH_CMD_REPORT'] == "true")
-				begin
-					http = Net::HTTP.post_form(URI.parse(self.framework.datastore['SPLOITWATCH_SRV_URI']), {'sploitwatch'=>'true', 'activityType'=>6, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>session.session_host, 'module'=>session.type, 'target'=>target, 'details'=>cmd})				
-				if (self.framework.datastore['SPLOITWATCH_DEBUG'] == "true")
-					self.status(http.body)
-				end
-				rescue
-					self.status("error")
-				end
+				self.send_data({'sploitwatch'=>'true', 'activityType'=>6, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>session.session_host, 'module'=>session.type, 'target'=>target, 'details'=>cmd})
 			end					
 		end
 
 		##  Command
 		def on_ui_command(cmd)
 			if (self.framework.datastore['SPLOITWATCH_CMD_REPORT'] == "true")
+				self.send_data({'sploitwatch'=>'true', 'activityType'=>6, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>"Unknown", 'module'=>'metasploit', 'target'=>target, 'details'=>cmd})
+			end
+		end
+
+		def send_data(data)
 				begin
-					http = Net::HTTP.post_form(URI.parse(self.framework.datastore['SPLOITWATCH_SRV_URI']), {'sploitwatch'=>'true', 'activityType'=>6, 'eventId'=>self.framework.datastore['SPLOITWATCH_EVENT'], 'player'=>self.framework.datastore['SPLOITWATCH_HANDLE'], 'playerIP'=>"Unknown", 'module'=>'metasploit', 'target'=>target, 'details'=>cmd})
-				if (self.framework.datastore['SPLOITWATCH_DEBUG'] == "true")
-					self.status(http.body)
+					uri = URI.parse(self.framework.datastore['SPLOITWATCH_SRV_URI'])
+					http = Net::HTTP.new(uri.host, uri.port)
+					post = Net::HTTP::Post.new(uri.path)
+					if (uri.scheme = 'https')
+						http.use_ssl = true 
+						http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+					end
+					post.form_data = data
+					response = http.request(post)
+				if (self.framework.datastore['SPLOITWATCH_DEBUG'] == "true" || self.framework.datastore['SPLOITWATCH_DEBUG'] == "devel")
+					self.status(response.body)
 				end
 				rescue
 					self.status("error")
 				end
-			end
 		end
 
 		def status(type)
